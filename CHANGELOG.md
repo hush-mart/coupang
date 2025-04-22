@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/hush-mart/coupang/compare/v1.6.0...v1.6.1) (2025-04-17)
+
+
+### Bug Fixes
+
+* comment out getProductInflow call in app.module.ts ([4815de0](https://github.com/hush-mart/coupang/commit/4815de050dc1a81b49640afa215b0f2183ffb45a))
+
 # [1.6.0](https://github.com/hush-mart/coupang/compare/v1.5.1...v1.6.0) (2025-04-17)
 
 
