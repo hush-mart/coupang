@@ -150,7 +150,7 @@ export class CoupangApiService {
   async getProductDetail(
     jobId: string,
     jobType: string,
-    sellerProductId: number,
+    sellerProductId: string | number,
   ): Promise<CoupangProduct> {
     const apiPath = `/v2/providers/seller_api/apis/api/v1/marketplace/seller-products/${sellerProductId}`;
 

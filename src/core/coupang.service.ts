@@ -47,7 +47,7 @@ export class CoupangService {
   async stopSaleBySellerProductId(
     jobId: string,
     jobType: string,
-    data: OnchWithCoupangProduct[] | CoupangComparisonWithOnchData[],
+    data: { sellerProductId: string; productName: string }[],
   ): Promise<{ status: string }> {
     console.log(`${jobType}${jobId}: 쿠팡 아이템 판매 중지 시작`);
     if (data.length === 0) {
@@ -63,12 +63,11 @@ export class CoupangService {
         );
       }
 
-      const productId =
-        jobType === JobType.SOLDOUT
-          ? +(product as OnchWithCoupangProduct).sellerProductId
-          : (product as CoupangComparisonWithOnchData).vendorInventoryId;
-
-      const details = await this.coupangApiService.getProductDetail(jobId, jobType, productId);
+      const details = await this.coupangApiService.getProductDetail(
+        jobId,
+        jobType,
+        product.sellerProductId,
+      );
       detailedProducts.push(details);
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
@@ -114,7 +113,7 @@ export class CoupangService {
   async deleteProducts(
     jobId: string,
     jobType: string,
-    data: CoupangPagingProduct[] | CoupangComparisonWithOnchData[],
+    data: { sellerProductId: string; productName: string }[],
   ): Promise<void> {
     console.log(`${jobType}${jobId}: 쿠팡 상품 삭제 시작`);
     if (data.length === 0) {
@@ -122,7 +121,8 @@ export class CoupangService {
       return;
     }
 
-    const deletedProducts: { sellerProductId: number; productName: string }[] = [];
+    const deletedProducts: { sellerProductId: string; productName: string }[] = [];
+
     for (const [i, product] of data.entries()) {
       if (i % Math.ceil(data.length / 10) === 0) {
         const progressPercentage = ((i + 1) / data.length) * 100;
@@ -131,28 +131,18 @@ export class CoupangService {
         );
       }
 
-      const productId =
-        jobType === JobType.SOLDOUT
-          ? +(product as CoupangPagingProduct).sellerProductId
-          : (product as CoupangComparisonWithOnchData).vendorInventoryId;
-
-      const productName =
-        jobType === JobType.SOLDOUT
-          ? (product as CoupangPagingProduct).sellerProductName
-          : (product as CoupangComparisonWithOnchData).productName;
-
       try {
-        await this.coupangApiService.deleteProduct(productId);
+        await this.coupangApiService.deleteProduct(product.sellerProductId);
 
         deletedProducts.push({
-          sellerProductId: productId,
-          productName: productName,
+          sellerProductId: product.sellerProductId,
+          productName: product.productName,
         });
 
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error: any) {
         console.error(
-          `${JobType.ERROR}${jobType}${jobId}: 쿠팡 상품 삭제 실패-${productId})\n`,
+          `${JobType.ERROR}${jobType}${jobId}: 쿠팡 상품 삭제 실패-${product.sellerProductId})\n`,
           error.response?.data || error.message,
         );
       }
@@ -270,7 +260,7 @@ export class CoupangService {
           jobId: jobId,
           jobType: jobType,
           jobName: '쿠팡 가격 업데이트',
-          data: { filePath: filePath, successCount: successCount, filedCount: failedCount },
+          data: { filePath: filePath, successCount: successCount, failedCount: failedCount },
         });
 
         console.log(`${jobType}${jobId}: 엑셀 파일 전송 요청 완료`);

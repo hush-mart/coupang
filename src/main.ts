@@ -1,6 +1,7 @@
 import * as process from 'node:process';
 
 import { setupGlobalConsoleLogging } from '@daechanjo/log';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import * as dotenv from 'dotenv';
@@ -8,14 +9,15 @@ import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { AppModule } from './app.module';
 import { AppConfig } from './config/app.config';
-import { ValidationPipe } from '@nestjs/common';
 
 const isDev = process.env.NODE_ENV !== 'PROD';
-isDev
-  ? dotenv.config({
-      path: '/Users/daechanjo/codes/project/auto-store/.env',
-    })
-  : dotenv.config({ path: '/app/.env' });
+if (isDev) {
+  dotenv.config({
+    path: '/Users/daechanjo/codes/project/auto-store/.env',
+  });
+} else {
+  dotenv.config({ path: '/app/.env' });
+}
 
 async function bootstrap() {
   const appConfig = AppConfig.getInstance();

@@ -1,0 +1,54 @@
+{
+	"root": true,
+	"env": {
+		"node": true,
+		"jest": true
+	},
+	"extends": [
+		"plugin:@typescript-eslint/recommended",
+		"plugin:prettier/recommended"
+	],
+	"overrides": [
+		{
+			"files": ["**/*.ts"],
+			"parser": "@typescript-eslint/parser",
+			"parserOptions": {
+				"project": ["./tsconfig.json"],
+				"sourceType": "module"
+			},
+			"plugins": [
+				"prettier",
+				"@typescript-eslint",
+				"import"
+			],
+			"rules": {
+				"prettier/prettier": "error",
+				"@typescript-eslint/interface-name-prefix": "off",
+				"@typescript-eslint/explicit-function-return-type": "off",
+				"@typescript-eslint/explicit-module-boundary-types": "off",
+				"@typescript-eslint/no-explicit-any": "off",
+				"import/order": [
+					"error",
+					{
+						"groups": ["builtin", "external", "internal"],
+						"newlines-between": "always",
+						"alphabetize": { "order": "asc", "caseInsensitive": true }
+					}
+				]
+			}
+		}
+	],
+	"ignorePatterns": [
+		"src/config/*.config.ts",
+		".eslintrc.mjs",
+		"ormconfig.js",
+		"redis.config.ts",
+		"redisSingle.config.ts",
+		"typeorm.config.ts",
+		"webpack-hmr.config.cjs",
+		"typeorm-transactional.ts",
+		"jest.config.js",
+		"release.config.cjs",
+		"generate-migration.js"
+	]
+}

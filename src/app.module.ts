@@ -15,6 +15,7 @@ import { CoupangService } from './core/coupang.service';
 import { CoupangSignatureService } from './core/coupang.signature.service';
 import { CoupangCrawlerService } from './core/crawler/coupang.crawler.service';
 import { CrawlCoupangDetailProductsProvider } from './core/crawler/provider/crawlCoupangDetailProducts.provider';
+import { CrawlCoupangPriceComparisonProvider } from './core/crawler/provider/crawlCoupangPriceComparison.provider';
 import { DeleteConfirmedCoupangProductProvider } from './core/crawler/provider/deleteConfirmedCoupangProduct.provider';
 import { InvoiceUploaderProvider } from './core/crawler/provider/invoiceUploader.provider';
 import { OrderStatusUpdateProvider } from './core/crawler/provider/orderStatusUpdate.provider';
@@ -22,7 +23,6 @@ import { CoupangComparisonEntity } from './infrastructure/entities/coupangCompar
 import { CoupangProductEntity } from './infrastructure/entities/coupangProduct.entity';
 import { CoupangUpdateItemEntity } from './infrastructure/entities/coupangUpdateItem.entity';
 import { CoupangRepository } from './infrastructure/repository/coupang.repository';
-import { CrawlCoupangPriceComparisonProvider } from './core/crawler/provider/crawlCoupangPriceComparison.provider';
 
 @Module({
   imports: [
@@ -86,6 +86,7 @@ import { CrawlCoupangPriceComparisonProvider } from './core/crawler/provider/cra
 export class AppModule implements OnApplicationBootstrap, OnModuleInit {
   constructor(
     @InjectQueue('coupang-message-queue') private readonly queue: Queue,
+    private readonly configService: ConfigService,
     private readonly playwrightService: PlaywrightService,
     private readonly coupangApiService: CoupangApiService,
     private readonly coupangCrawlerService: CoupangCrawlerService,
@@ -93,7 +94,8 @@ export class AppModule implements OnApplicationBootstrap, OnModuleInit {
 
   async onApplicationBootstrap() {
     setTimeout(async () => {
-      await this.playwrightService.init(true, 'chromium');
+      this.playwrightService.setConfig(this.configService.get<boolean>('HEAD_LESS'), 'chromium');
+      await this.playwrightService.initializeBrowser();
       // await this.coupangCrawlerService.newGetCoupangOrderList('test', 'test');
       // await this.coupangApiService.getProductInflow();
     });
