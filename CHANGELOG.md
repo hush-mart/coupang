@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/hush-mart/coupang/compare/v1.6.1...v1.7.0) (2025-04-22)
+
+
+### Features
+
+* add ESLint configuration and update product ID handling in Coupang services ([592c68d](https://github.com/hush-mart/coupang/commit/592c68daad36d184dfff3e20cb834d9c9b7b9200))
+
 ## [1.6.1](https://github.com/hush-mart/coupang/compare/v1.6.0...v1.6.1) (2025-04-17)
 
 
